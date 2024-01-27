@@ -1,0 +1,219 @@
+from datetime import datetime
+
+class TodoList():
+
+    toDoLists = []
+
+    #method
+    def __init__(self, task = "", description = "", dueDate = "", createdBy = "", createDate = "",isCompleted = False): #처음에 inital value가 필요할때
+        self.task = task
+        self.description = description
+        self.dueDate = dueDate
+        self.createdBy = createdBy
+        self.createDate = createDate
+        self.isCompleted = isCompleted
+
+    def options(self):
+        optionMode = "Y"
+        while optionMode == "Y":
+            print("--------------------------------------------------------------------")
+            print("Todo-List")
+            print("1. View current Todo List")
+            print("2. Add")
+            print("3. Edit")
+            print("4. Remove")
+            print("5. Complete")
+            print("6. Completed List")
+            print("7. Close System")
+            print("--------------------------------------------------------------------")
+
+            try:
+                option = int(input("Please enter your option: "))
+            except ValueError:
+                print("You entered an invalid option. Please enter a number (1-7)")
+                continue
+
+            if option == 1:
+                self.currView()
+            elif option == 2:
+                self.add()
+            elif option == 3:
+                self.edit()
+            elif option == 4:
+                self.remove()
+            elif option == 5:
+                self.complete()
+            elif option == 6:
+                self.completedView()   
+            elif option == 7:
+                optionMode = "N"
+                break
+            else:
+                print("You entered an invalid option (1-7)")
+                continue
+            
+            optionMode = input("Do you want to see the options again? (Y/N) ").upper()
+            while optionMode not in ["Y", "N"]:
+                optionMode = input("You entered an invalid option: (Y/N) ").upper()
+
+        print("Closing System...")
+
+    def add(self):
+        print("--------------------------------------------------------------------")
+        self.task = input("What's your task? ")
+        self.description = input("Any Description? ")
+        self.dueDate = input("When is your due date to complete this task? ")
+        self.createdBy = input("Please Enter your name: ")
+        self.createDate = datetime.now()
+        self.isCompleted = False
+        self.toDoLists.append([self.task, self.description, self.dueDate, self.createdBy, self.createDate, self.isCompleted])
+        print("")
+        print("Todo-List has been added:")
+        self.currView()
+        print("--------------------------------------------------------------------")
+    
+
+    def edit(self):
+        editMode = True
+        while editMode:
+            if len(self.toDoLists) < 1:
+                    self.currView()
+                    editMode = False
+            else:
+                for i in range(len(self.toDoLists)):
+                    if self.toDoLists[i][5] == False:
+                        print(str(i+1) + ": " + str(self.toDoLists[i]))
+
+                print(str(len(self.toDoLists)+1) + ": Back to Menu")
+
+                try:
+                    editOption = int(input("Which List do you want to edit? "))
+                except ValueError:
+                    print("You entered an invalid option. Please enter a number.")
+                    continue
+                
+                if editOption == len(self.toDoLists)+1:
+                    editMode = False
+                elif editOption > len(self.toDoLists) or editOption <= 0:
+                    print("You entered an invalid option.")
+                    continue
+                else:
+                    try:
+                        print("Pick the fields that you want to edit: ")
+                        print("1. Task: " + self.toDoLists[editOption-1][0])
+                        print("2. Description: " + self.toDoLists[editOption-1][1])
+                        print("3. Due Date: " + self.toDoLists[editOption-1][2])
+                        print("4. Back to Menu ")
+                    except IndexError:
+                        print("You entered an invalid option. Please enter a number")
+                        continue
+
+                    try:
+                        fieldEditOption = int(input())
+                    except ValueError:
+                        print("You entered an invalid option. Please enter a number")
+                        continue
+                    
+                    if fieldEditOption < 5:
+                        if fieldEditOption == 1:
+                            print("Please enter new Task: ")
+                            self.toDoLists[editOption-1][0] = input()
+                        elif fieldEditOption == 2:
+                            print("Please enter new Description: ")
+                            self.toDoLists[editOption-1][1] = input()
+                        elif fieldEditOption == 3:
+                            print("Please enter new Due Date: ")
+                            self.toDoLists[editOption-1][2] = input()
+                        elif fieldEditOption == 4:
+                            editMode = False
+                        else:
+                            print("You entered an invalid option. Return to Lists")
+                            continue
+                    else:
+                        print("You entered an invalid option. Return to Lists")
+                        continue
+                    
+
+    def remove(self):
+        removeMode = True
+        while removeMode:
+            if len(self.toDoLists) < 1:
+                self.currView()
+                removeMode = False
+            else:
+                for i in range(len(self.toDoLists)):
+                    print(str(i+1) + ": " + str(self.toDoLists[i]))
+                
+                print(str(len(self.toDoLists)+1) + ": Back to Menu")
+
+                try:
+                    removeOption = int(input("Which List do you want to remove? "))
+                except IndexError:
+                    print("You entered an invalid option. Please enter a number")
+                    continue
+                except ValueError:
+                    print("You entered an invalid option. Please enter a number")
+                    continue
+                
+                if removeOption == len(self.toDoLists)+1:
+                    removeMode = False
+                elif removeOption > len(self.toDoLists) or removeOption <= 0:
+                    print("You entered an invalid option.")
+                    continue
+                else:
+                    self.toDoLists.remove(self.toDoLists[removeOption-1])
+
+
+    def complete(self):
+        completeMode = True
+
+        while completeMode:
+            if len(self.toDoLists) < 1:
+                self.currView()
+                completeMode = False
+            else:
+                for i in range(len(self.toDoLists)):
+                    if self.toDoLists[i][5] == False:
+                        print(str(i+1) + ": " + str(self.toDoLists[i]))
+                        
+                print(str(len(self.toDoLists)+1) + ": Back to Menu")
+
+                try:
+                    completeOption = int(input("Which List did you complete? "))
+                except IndexError:
+                    print("You entered an invalid option. Please enter a number")
+                    continue
+                except ValueError:
+                    print("You entered an invalid option. Please enter a number")
+                    continue
+                        
+                if completeOption == len(self.toDoLists)+1:
+                    completeMode = False
+                    continue
+                elif completeOption > len(self.toDoLists) or completeOption <= 0:
+                    print("You entered an invalid option.")
+                    continue
+                else:
+                    self.toDoLists[completeOption-1][5] = True
+
+
+    def currView(self):
+        if len(self.toDoLists) < 1:
+            print("There is no Todo-List")
+        else:
+            for i in range(len(self.toDoLists)):
+                print(str(i+1) + ": " + str(self.toDoLists[i]))
+
+
+
+    def completedView(self):
+        for i in range(len(self.toDoLists)):
+            if len(self.toDoLists) < 1:
+                print("There is no completed list")
+            else:
+                if self.toDoLists[i][5] == bool(True):
+                    print(str(i+1) + ": " + str(self.toDoLists[i]))
+
+
+toDoList = TodoList()
+toDoList.options()
